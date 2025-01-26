@@ -1,0 +1,55 @@
+You need to solve an issue for a Python project.
+
+Issue description:
+~~~
+{issue_description}
+~~~
+
+List of files to check for context information:
+```
+{files}
+```
+
+Current file context information:
+```
+{context}
+```
+
+history of solution process:
+```
+{history}
+```
+
+You need to come up with a solution for the issue described above.
+
+
+You can do the following actions:
+- Add a file from a list to the issue context.
+- Remove a file from the issue context.
+- Come up with a solution for the issue.
+
+Solution should be in a format of a git patch file. 
+
+Return result in the JSON format without any additional data.
+- patch: git patch file (can be empty if a solution is not ready)
+- solution: description of the solution (can be empty if a solution is not ready)
+- files: list of updated files that should be in the context (if you want to remove file - just remove it from the list, if you want to add - add it to the list)
+- history: description of the history of thought process (which files you added, removed, why you added them, why you removed them, what you tried, etc.)
+
+If you are not ready to provide a solution and need more context from files, just return an empty patch and solution and ask for required files.
+
+Example of the response:
+```json
+{{
+    "patch": "diff --git ...",
+    "solution": "Your solution description"
+    "files": [
+        "path1/file1.py",
+        "path2/file2.py",
+        ...
+    ],
+    "history": "Your history description",
+}}
+```
+
+
