@@ -1,0 +1,15 @@
+# Mac OS files
+.DS_Store
+
+# Temporary files
+*tmp*
+
+# Python
+__pycache__
+.pytest_cache
+
+# Datasets
+data
+
+# Credentials
+credentials.yaml

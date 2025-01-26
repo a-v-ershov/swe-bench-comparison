@@ -1,0 +1,16 @@
+# General Python dependencies
+black
+flake8
+pytest
+pytest-mock
+# Data analysis
+jupyterlab
+ipywidgets
+pandas
+matplotlib
+# Networking
+requests
+# GPT
+openai
+# Datasets
+datasets
