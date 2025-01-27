@@ -1,24 +1,25 @@
-You need to choose which files can help to solve the following issue of the Python project.
-In total you can choose up to 100 files.
+Select files that would help solve the following Python project issue.
+You may choose up to 100 files.
 
 Issue description:
 ~~~
 {issue_description}
 ~~~
 
-List of files to choose from:
+List of available files:
 ```
 {files}
 ```
 
-Please return the result in the JSON format without any additional data.
+Return the result in JSON format without any additional commentary.
+Include only the JSON object in your response.
 
-Example of the response:
+Example response:
 ```json
 {{
     "files": [
         "path1/file1.py",
-        "path2/file2.py",
-        ...
+        "path2/file2.py"
     ]
 }}
+```

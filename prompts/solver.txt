@@ -15,26 +15,29 @@ Current file context information:
 {context}
 ```
 
-history of solution process:
+History of the solution process:
 ```
 {history}
 ```
 
+Current step: {current_step}
+
 You need to come up with a solution for the issue described above.
 
-
-You can do the following actions:
-- Add a file from a list to the issue context.
-- Remove a file from the issue context.
-- Come up with a solution for the issue.
+- Decide which files from list of files do you need to solve the issue. If they are not in the context, ask for them, don't create a solution, until you have all the required files. These files should be in the files list in the response. If you don't need some files in the context, just remove them from the list.
+- When you have all the required files, come up with a solution for the issue.
+- Look at your solution critically and find all the possible issues with it.
+- If you find any issues, update your solution and repeat the process until you are satisfied with the solution.
+- You can use maximum of 3 steps, so if you already on step 3 you need to come up with a solution.
 
 Solution should be in a format of a git patch file. 
 
-Return result in the JSON format without any additional data.
+Return result in the JSON format without any additional data. Don't explain anything, just return the JSON object.
+
 - patch: git patch file (can be empty if a solution is not ready)
 - solution: description of the solution (can be empty if a solution is not ready)
 - files: list of updated files that should be in the context (if you want to remove file - just remove it from the list, if you want to add - add it to the list)
-- history: description of the history of thought process (which files you added, removed, why you added them, why you removed them, what you tried, etc.)
+- history: description of the history of thought process (which files you added, removed, why you added them, why you removed them, what you tried, etc.). When you write a history add all previous history to the new one.
 
 If you are not ready to provide a solution and need more context from files, just return an empty patch and solution and ask for required files.
 
