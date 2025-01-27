@@ -114,11 +114,12 @@ def get_all_files(
     return sorted(file_paths)
 
 
-def get_files_context(files: list[str]) -> str:
+def get_files_context(files: list[str], limit: int = 10000) -> str:
     """
     Create a context string from the content of the files.
 
     @param files: List of file paths
+    @param limit: Maximum character limit for the context
     @return: Context string
     """
     context = ""
@@ -126,6 +127,10 @@ def get_files_context(files: list[str]) -> str:
         if not file.startswith(LOCAL_SYMPY_REPO_PATH):
             file = f"{LOCAL_SYMPY_REPO_PATH}/{file}"
         context += f"File: {file}\n\n"
-        with open(file, "r") as f:
-            context += f.read() + "\n-----------\n"
-    return context
+        try:
+            with open(file, "r") as f:
+                context += f.read() + "\n-----------\n"
+        except FileNotFoundError:
+            logger.warning(f"File not found: {file}")
+            context += "File not found\n-----------\n"
+    return context[:limit]

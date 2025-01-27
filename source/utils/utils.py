@@ -3,14 +3,15 @@ Utility functions for logging and reading credentials
 """
 
 import logging
-from typing import TypedDict
 
 import yaml
+from pydantic import BaseModel
 
 
 def get_logger(name: str) -> logging.Logger:
     """
-    Create a logger with the specified name.
+    Create a logger with the specified name
+
     @param name: Name of the logger
     @return: Logger object
     """
@@ -23,19 +24,17 @@ def get_logger(name: str) -> logging.Logger:
     return logger
 
 
-class Credentials(TypedDict):
+class Credentials(BaseModel):
     openai_key: str
     openrouterai_key: str
 
 
 def get_credentials(credentials_path: str = "credentials.yaml") -> Credentials:
     """
-    Read OpenAI and Anthropic API keys from credentials file.
+    Read OpenAI and OpenRouter API keys from credentials file.
 
     @param credentials_path: Path to credentials YAML file
-    @return: Tuple of (OpenAI API key, Anthropic API key)
-    @raises FileNotFoundError: If credentials file doesn't exist
-    @raises KeyError: If required keys are missing from credentials
+    @return: Tuple of (OpenAI API key, OpenRouter API key)
     """
     try:
         with open(credentials_path, "r") as file:
@@ -46,10 +45,10 @@ def get_credentials(credentials_path: str = "credentials.yaml") -> Credentials:
                 missing_keys.append(key)
         if missing_keys:
             raise KeyError(f"Missing required fields in credentials file: {', '.join(missing_keys)}")
-        return {
-            "openai_key": credentials["openai_key"],
-            "openrouterai_key": credentials["openrouterai_key"],
-        }
+        return Credentials(
+            openai_key=credentials["openai_key"],
+            openrouterai_key=credentials["openrouterai_key"],
+        )
     except FileNotFoundError:
         raise FileNotFoundError(f"Credentials file not found at {credentials_path}")
     except yaml.YAMLError as e:
