@@ -2,6 +2,7 @@
 Data models
 """
 
+import pandas as pd
 from pydantic import BaseModel
 
 
@@ -90,3 +91,119 @@ class TestResult(BaseModel):
     solution_deepseek: Solution
     test_openai: PatchComparisonResponse
     test_deepseek: PatchComparisonResponse
+
+    def create_comparison_record(self, issue: pd.Series) -> dict:
+        return {
+            # Model names
+            "openai_model": self.solution_openai.model_name,
+            "deepseek_model": self.solution_deepseek.model_name,
+            # Patch solutions
+            "openai_patch": self.solution_openai.patch,
+            "deepseek_patch": self.solution_deepseek.patch,
+            "correct_patch": issue["patch"],
+            # Solution descriptions
+            "openai_solution_description": self.solution_openai.description,
+            "deepseek_solution_description": self.solution_deepseek.description,
+            # Number of steps taken
+            "openai_num_steps": self.solution_openai.number_of_steps,
+            "deepseek_num_steps": self.solution_deepseek.number_of_steps,
+            # Number of tokens used for retriever
+            "openai_input_tokens_retriever": self.solution_openai.num_input_tokens_for_retriever,
+            "deepseek_input_tokens_retriever": self.solution_deepseek.num_input_tokens_for_retriever,
+            "openai_output_tokens_retriever": self.solution_openai.num_output_tokens_for_retriever,
+            "deepseek_output_tokens_retriever": self.solution_deepseek.num_output_tokens_for_retriever,
+            # Number of tokens used for solver
+            "openai_input_tokens_solver": self.solution_openai.num_input_tokens_for_solver,
+            "deepseek_input_tokens_solver": self.solution_deepseek.num_input_tokens_for_solver,
+            "openai_output_tokens_solver": self.solution_openai.num_output_tokens_for_solver,
+            "deepseek_output_tokens_solver": self.solution_deepseek.num_output_tokens_for_solver,
+            # Comparison
+            # Correctness
+            "openai_openai_correct": self.test_openai.llm1_is_correct,
+            "openai_deepseek_correct": self.test_openai.llm2_is_correct,
+            "deepseek_openai_correct": self.test_deepseek.llm1_is_correct,
+            "deepseek_deepseek_correct": self.test_deepseek.llm2_is_correct,
+            # Scores
+            "openai_openai_score": self.test_openai.llm1_score,
+            "openai_deepseek_score": self.test_openai.llm2_score,
+            "deepseek_openai_score": self.test_deepseek.llm1_score,
+            "deepseek_deepseek_score": self.test_deepseek.llm2_score,
+            # Descriptions
+            "openai_openai_description": self.test_openai.llm1_description,
+            "openai_deepseek_description": self.test_openai.llm2_description,
+            "deepseek_openai_description": self.test_deepseek.llm1_description,
+            "deepseek_deepseek_description": self.test_deepseek.llm2_description,
+            # Files
+            "openai_openai_files": self.test_openai.llm1_files,
+            "openai_deepseek_files": self.test_openai.llm2_files,
+            "deepseek_openai_files": self.test_deepseek.llm1_files,
+            "deepseek_deepseek_files": self.test_deepseek.llm2_files,
+            "correct_patch_files": self.test_openai.files_in_correct_patch,
+        }
+
+    @staticmethod
+    def get_keys_for_solutions() -> list[str]:
+        return [
+            "openai_patch",
+            "deepseek_patch",
+            "correct_patch",
+            "openai_solution_description",
+            "deepseek_solution_description",
+        ]
+
+    @staticmethod
+    def get_keys_for_steps() -> list[str]:
+        return [
+            "openai_num_steps",
+            "deepseek_num_steps",
+        ]
+
+    @staticmethod
+    def get_keys_for_correctness() -> list[str]:
+        return [
+            "openai_openai_correct",
+            "openai_deepseek_correct",
+            "deepseek_openai_correct",
+            "deepseek_deepseek_correct",
+        ]
+
+    @staticmethod
+    def get_keys_for_test_scores() -> list[str]:
+        return [
+            "openai_openai_score",
+            "openai_deepseek_score",
+            "deepseek_openai_score",
+            "deepseek_deepseek_score",
+        ]
+
+    @staticmethod
+    def get_keys_for_test_descriptions() -> list[str]:
+        return [
+            "openai_openai_description",
+            "openai_deepseek_description",
+            "deepseek_openai_description",
+            "deepseek_deepseek_description",
+        ]
+
+    @staticmethod
+    def get_keys_for_files() -> list[str]:
+        return [
+            "openai_openai_files",
+            "openai_deepseek_files",
+            "deepseek_openai_files",
+            "deepseek_deepseek_files",
+            "correct_patch_files",
+        ]
+
+    @staticmethod
+    def get_keys_for_used_tokens() -> list[str]:
+        return [
+            "openai_input_tokens_retriever",
+            "deepseek_input_tokens_retriever",
+            "openai_output_tokens_retriever",
+            "deepseek_output_tokens_retriever",
+            "openai_input_tokens_solver",
+            "deepseek_input_tokens_solver",
+            "openai_output_tokens_solver",
+            "deepseek_output_tokens_solver",
+        ]
