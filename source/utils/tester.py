@@ -130,8 +130,10 @@ class Tester:
         except Exception as e:
             logger.error(f"Error in test_solution: {e}")
             return PatchComparisonResponse(
+                llm1_is_correct=False,
                 llm1_score=0,
                 llm1_description="Error in testing the solution",
+                llm2_is_correct=False,
                 llm2_score=0,
                 llm2_description="Error in testing the solution",
                 llm1_files=[],
