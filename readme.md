@@ -3,6 +3,7 @@
 ## Project structure:
 * [prompts](prompts) - prompt templates 
 * [utils](source/utils) - utility functions
+* [Comparison analysis](source/comparison.ipynb) - Jupyter notebook with comparison analysis
 
 ## How models are compared
 * [SWE-Bench](https://www.swebench.com/lite.html) dataset with issues related to [SymPy](https://github.com/sympy/sympy) repository is used to test models' bug fixing capabilities
