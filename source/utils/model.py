@@ -75,3 +75,18 @@ class PatchComparisonResponse(BaseModel):
     llm1_files: list[str]
     llm2_files: list[str]
     files_in_correct_patch: list[str]
+
+
+class TestResult(BaseModel):
+    """
+    Final output of the test logic
+    @param solution_openai: Solution output from OpenAI
+    @param solution_deepseek: Solution output from DeepSeek
+    @param test_openai: Patch comparison output for OpenAI
+    @param test_deepseek: Patch comparison output for DeepSeek
+    """
+
+    solution_openai: Solution
+    solution_deepseek: Solution
+    test_openai: PatchComparisonResponse
+    test_deepseek: PatchComparisonResponse
