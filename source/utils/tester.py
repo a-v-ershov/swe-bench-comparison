@@ -10,7 +10,7 @@ import pandas as pd
 from openai import AsyncOpenAI
 from openai.types.chat.chat_completion import ChatCompletion
 
-from source.utils.model import PatchComparisonResponse, RetrieverResponse, Solution, SolverResponse
+from source.utils.model import PatchComparisonResponse, RetrieverResponse, Solution, SolverResponse, TestResult
 from source.utils.prompt import get_patch_checker_prompt, get_retriever_prompt, get_solver_prompt
 from source.utils.repo import (
     LOCAL_SYMPY_REPO_PATH,
@@ -91,7 +91,6 @@ class Tester:
             solver_resp_parsed = SolverResponse.model_validate(json_resp)
             for k in solver_usage.keys():
                 solver_usage[k] += current_step_usage[k]
-            logger.info(f"Got response for the solver at step {current_step}")
             logger.info(f"Usage at step {current_step}: {current_step_usage}")
 
             # Check if the solver has solved the issue
@@ -99,10 +98,6 @@ class Tester:
             current_step += 1
             context = get_files_context(solver_resp_parsed.files)
             history = solver_resp_parsed
-            logger.info(f"Solution at step {current_step}: {solver_resp_parsed.solution}")
-            logger.info(f"Patch at step {current_step}: {solver_resp_parsed.patch}")
-            logger.info(f"Files at step {current_step}: {solver_resp_parsed.files}")
-            logger.info(f"History at step {current_step}: {solver_resp_parsed.history}")
 
         # Return the solution
         return Solution(
@@ -122,7 +117,7 @@ class Tester:
         solution_openai: Solution,
         solution_deepseek: Solution,
         provider: Literal["openai", "deepseek"],
-    ):
+    ) -> PatchComparisonResponse:
         """
         Test 2 solutions against the correct patch
         @param issue: Issue to solve
@@ -248,7 +243,7 @@ class Tester:
                 provider=provider,
             )
             resp_parsed = RetrieverResponse.model_validate(json_resp)
-            logger.info(f"Got response from {model_name} for chunk. Files:\n{resp_parsed.files}")
+            logger.info(f"Got response from {model_name} for chunk.")
             logger.info(f"Chunk usage: {chunk_usage}")
             return resp_parsed.files, chunk_usage
 
@@ -267,7 +262,7 @@ class Tester:
         return final_response, retriever_usage
 
 
-async def process_issue(issue: pd.Series, tester: Tester) -> dict:
+async def process_issue(issue: pd.Series, tester: Tester) -> TestResult:
     """
     Process testing process for a given issue
     1. Checkout to the base commit of the issue
@@ -320,9 +315,9 @@ async def process_issue(issue: pd.Series, tester: Tester) -> dict:
     logger.info(f"Test of patches using DeepSeek V3: {test_solution_using_deepseek}")
 
     # Return the results
-    return {
-        "solution_gpt4": solution_gpt4,
-        "solution_deepseek": solution_deepseek,
-        "test_solution_using_gpt4": test_solution_using_gpt4,
-        "test_solution_using_deepseek": test_solution_using_deepseek,
-    }
+    return TestResult(
+        solution_openai=solution_gpt4,
+        solution_deepseek=solution_deepseek,
+        test_openai=test_solution_using_gpt4,
+        test_deepseek=test_solution_using_deepseek,
+    )
